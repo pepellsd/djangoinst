@@ -28,9 +28,13 @@ class Token(models.Model):
 
 class Post(models.Model):
     user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    description = models.CharField(max_length=500)
-    tags = models.ManyToManyField('Tag', db_index=True)
+    description = models.CharField(max_length=500, null=True)
+    tags = models.ManyToManyField('Tag', db_index=True, null=True)
     images = models.ManyToManyField('Picture')
+
+    @classmethod
+    def list_posts(cls):
+        return ""
 
 
 class Tag(models.Model):

@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8">
+  <title>main</title>
+  <link type="text/css" href="{% static "css/index.css" %}" rel=”stylesheet” >
+ </head>
+ <body>
+   {% for post in posts %}
+        <div id="row-main-post">
+            <div class="col-md-3">
+                {% for image in post.images.all %}
+                    <img src="{{ "media/" }}{{ image.path }}" alt=""/>
+                {% endfor %}
+                {% for tag in post.tags.all %}
+                    <p class="">{{ tag.name }}</p>
+                {% endfor %}
+                <p class="">{{ post.description }}</p>
+                <button type="button" onclick="document.location='/posts/{{ post.id }}'" class="btn btn" id="btn-watch">подробнее</button>
+
+            </div>
+
+        </div>
+    {% endfor %}
+ </body>
+</html>

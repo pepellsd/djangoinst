@@ -1,0 +1,16 @@
+header {
+    background: #3473c5;
+}
+
+body {
+    background: #fff;
+}
+
+#btn-watch {
+    text-decoration-color: gainsboro;
+    background: royalblue;
+}
+
+#row-posts {
+    margin-left: 100px;
+}
