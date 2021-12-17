@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE HTML>
 <html lang="en">
  <head>
@@ -6,7 +7,7 @@
  </head>
  <body>
     {% for image in post.images.all %}
-        <img src="{{ "media/" }}{{ image.path }}" alt=""/>
+        <img src="/{{ "media/" }}{{ image.path }}" alt=""/>
     {% endfor %}
     {% for tag in post.tags.all %}
         <p>{{ tag.name }}</p>
