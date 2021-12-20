@@ -1,6 +1,9 @@
 from django.db import models
 from django.conf import settings
+from django.urls import reverse
 from django.contrib.auth.models import AbstractUser
+from django.db.models import signals
+from django.core.mail import send_mail
 
 from .manager import UserManager
 
@@ -22,31 +25,30 @@ class User(AbstractUser):
 
 class Token(models.Model):
     code = models.CharField(max_length=255)
-    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     expiration_date = models.DateTimeField()
 
 
 class Post(models.Model):
-    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     description = models.CharField(max_length=500, null=True)
-    tags = models.ManyToManyField('Tag', db_index=True, null=True)
+    tags = models.ManyToManyField('Tag', db_index=True)
     images = models.ManyToManyField('Picture')
 
-    @classmethod
-    def list_posts(cls):
-        return ""
+    def absolute_url(self):
+        return reverse('view_post', kwargs={"post_id": self.pk})
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, db_index=True)
 
     def __str__(self):
         return self.name
 
 
 class Like(models.Model):
-    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    post_id = models.ForeignKey('Post', on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    post = models.ForeignKey('Post', on_delete=models.CASCADE)
 
 
 class Picture(models.Model):
@@ -54,6 +56,6 @@ class Picture(models.Model):
 
 
 class Comment(models.Model):
-    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    post_id = models.ForeignKey('Post', on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    post = models.ForeignKey('Post', on_delete=models.CASCADE)
     text = models.CharField(max_length=500)

@@ -4,20 +4,26 @@
  <head>
   <meta charset="utf-8">
   <title>main</title>
-  <link rel=”stylesheet” href="{% static "instagram/css/index.css" %}">
+     <link rel="shortcut icon" type="image/png" href="{% static 'instagram/img/favicon.ico' %}"/>
+  <link rel="stylesheet" href="{% static "instagram/css/index.css" %}">
  </head>
+ <button type="button" onclick="document.location='{% url 'register' %}'" class="btn btn-primary">sign up</button>
+{# <button type="button" onclick="document.location='{% url '#' %}'" class="btn btn-primary">sign in</button>#}
+ <form class="navbar-form navbar-left" method="GET">
+    <div class="input-group input-group-sm">
+      <input class="form-control form-control-navbar" type="search" placeholder="search" aria-label="Search" name="search" value="">
+    </div>
+ </form>
  <body>
    {% for post in posts %}
         <div id="row-main-post">
             <div class="col-md-3">
-                {% for image in post.images.all %}
-                    <img src="{{ "media/" }}{{ image.path }}" alt=""/>
-                {% endfor %}
+                <img src="{{ "media/" }}{{ post.images.first.path }}" alt=""/>
                 {% for tag in post.tags.all %}
                     <p class="">{{ tag.name }}</p>
                 {% endfor %}
                 <p class="">{{ post.description }}</p>
-                <button type="button" onclick="document.location='/posts/{{ post.id }}'" class="btn btn" id="btn-watch">подробнее</button>
+                <button type="button" onclick="document.location='{{ post.absolute_url }}'" class="btn btn" id="btn-watch">подробнее</button>
 
             </div>
 

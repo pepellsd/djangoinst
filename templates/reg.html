@@ -1,0 +1,7 @@
+<h1 class="select2-container">Sign up</h1>
+<form method="POST" action="{% url 'register' %}">
+    {% csrf_token %}
+
+    {{ form }}
+    <p><input name='register' type="submit" value="Register" class="btn btn-primary"></p>
+</form>

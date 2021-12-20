@@ -13,6 +13,10 @@
         <p>{{ tag.name }}</p>
     {% endfor %}
   <p>{{ post.description }}</p>
-
+  <p>likes {{ likes_count }}</p>
+    <p>comments</p>
+    {% for comment in comments %}
+    <p>{{ comment.text}}</p>
+    {% endfor %}
  </body>
 </html>
