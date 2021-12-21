@@ -39,10 +39,14 @@ INSTALLED_APPS = [
     'instagram.apps.InstagramConfig',
 ]
 
-TAGGIT_CASE_INSENSITIVE = True
+# added consts
 AUTH_USER_MODEL = 'instagram.User'
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# auth
+LOGIN_URL = '/login'
+LOGOUT_REDIRECT_URL = "/login"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

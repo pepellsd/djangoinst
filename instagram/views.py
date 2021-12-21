@@ -9,13 +9,16 @@ from django.utils.encoding import force_bytes, force_str
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import EmailMessage
 from django.conf import settings
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Post, User, Like, Comment, Token
 from .forms import UserRegisterForm
 
 
+@login_required()
 def index(request):
     search = request.GET.get("search")
     if search:
@@ -24,13 +27,10 @@ def index(request):
     else:
         posts = Post.objects.all()
         # posts = Post.objects.exclude(user_id=request.user.id)
-
-    # Просмотр постов только для авторизованных пользователей
-    # Поиск по тегам +
-    # посты только других пользователей +
     return render(request, "index.html", {"posts": posts})
 
 
+@login_required()
 def view_post(request, post_id):
     post = Post.objects.get(pk=post_id)
     comments = Comment.objects.filter(post_id=post.id).all()
@@ -38,24 +38,29 @@ def view_post(request, post_id):
     return render(request, "post.html", {"post": post, "comments": comments, "likes_count": len_likes})
 
 
-# class PostView(DetailView):
-#     template_name = "post.html"
-#     model = Post
-#     context_object_name = "post"
-#     extra_context = {"likes": len(Like.objects.filter(post_id=))}
+class LoginUser(View):
+    def get(self, request):
+        return render(request, "login.html")
+
+    def post(self, request):
+        email = request.POST["email"]
+        password = request.POST["password"]
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return HttpResponse("no user with this email")
+        if authenticate(email=email, password=password):
+            login(request, user)
+            return redirect("index")
+        return HttpResponse("password not correct")
 
 
-# Страничка профиля юзера
-# просмотр только для авторизованнфх пользователей
-class ProfileView(View):
+class ProfileView(View, LoginRequiredMixin):
     def get(self, request):
         user = request.user
         return render(request, "profile.html", {"user": user})
 
     def post(self):
-        pass
-
-    def put(self):
         User.objects.get()
 
 
@@ -93,22 +98,15 @@ class Registration(View):
 def activate(request, uidb64, token):
     try:
         uid = force_str(urlsafe_base64_decode(uidb64).decode())
-        print(uid)
         user = User.objects.get(pk=uid)
-        print(user)
     except User.DoesNotExist:
-        print(f"no user with id {uid}")
         user=None
-    print("start checking")
     _token = Token.objects.filter(user_id=user.pk).first()
     if user and token==_token.code:
-        print("user and token")
         if _token.expiration_date >= timezone.now():
-            print("exp delta")
             user.is_active =True
             user.save()
             login(request, user)
-            print("done")
             return redirect("profile")
     else:
         return HttpResponse("activation failed", status=401)

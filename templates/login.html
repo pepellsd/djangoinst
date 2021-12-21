@@ -1,0 +1,31 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>login</title>
+    <link rel="shortcut icon" type="image/png" href="{% static 'instagram/img/favicon.ico' %}"/>
+    <link rel="stylesheet" href="{% static "instagram/css/index.css" %}">
+</head>
+<body>
+<button type="button" onclick="document.location='{% url 'register' %}'" class="btn btn-primary" id="btn-sign-in">sign up</button>
+<div>
+    <form class="" action="{% url 'login' %}" method="POST">
+        {% csrf_token %}
+    <label>
+        email
+        <input type="email" name="email">
+    </label>
+
+    <label>
+        password
+        <input type="password" name="password">
+    </label>
+        <button type="submit" >sign in</button>
+    </form>
+</div>
+</body>
+</html>

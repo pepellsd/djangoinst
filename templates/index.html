@@ -7,13 +7,18 @@
      <link rel="shortcut icon" type="image/png" href="{% static 'instagram/img/favicon.ico' %}"/>
   <link rel="stylesheet" href="{% static "instagram/css/index.css" %}">
  </head>
- <button type="button" onclick="document.location='{% url 'register' %}'" class="btn btn-primary">sign up</button>
-{# <button type="button" onclick="document.location='{% url '#' %}'" class="btn btn-primary">sign in</button>#}
- <form class="navbar-form navbar-left" method="GET">
+ <header>
+     <div class="header-style">
+     <button type="button" onclick="document.location='{% url 'logout' %}'" class="btn btn-primary" id="btn-sign-in">logout</button>
+ <div>
+ </div>
+         <form class="navbar-form navbar-left" method="GET">
     <div class="input-group input-group-sm">
       <input class="form-control form-control-navbar" type="search" placeholder="search" aria-label="Search" name="search" value="">
     </div>
  </form>
+     </div>
+ </header>
  <body>
    {% for post in posts %}
         <div id="row-main-post">
