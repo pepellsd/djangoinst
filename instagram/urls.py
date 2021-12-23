@@ -11,4 +11,5 @@ urlpatterns = [
     path('activate/<uidb64>/<token>', activate, name='activate'),
     path('login/', LoginUser.as_view(), name="login"),
     path('logout/', LogoutView.as_view(next_page=settings.LOGOUT_REDIRECT_URL), name='logout'),
+    path('edit_profile', ProfileEdit.as_view(), name="edit_profile")
 ]

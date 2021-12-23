@@ -15,18 +15,16 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Post, User, Like, Comment, Token
-from .forms import UserRegisterForm
+from .forms import UserRegisterForm, UserEditForm
 
 
 @login_required()
 def index(request):
     search = request.GET.get("search")
     if search:
-        posts = Post.objects.filter(tags__name=search)
-        # posts = Post.objects.exclude(user_id=request.user.id, tags__name=search)
+        posts = Post.objects.exclude(user_id=request.user.id, tags__name=search)
     else:
-        posts = Post.objects.all()
-        # posts = Post.objects.exclude(user_id=request.user.id)
+        posts = Post.objects.exclude(user_id=request.user.id)
     return render(request, "index.html", {"posts": posts})
 
 
@@ -58,10 +56,32 @@ class LoginUser(View):
 class ProfileView(View, LoginRequiredMixin):
     def get(self, request):
         user = request.user
-        return render(request, "profile.html", {"user": user})
+        posts = Post.objects.filter(user_id=user.pk)
+        return render(request, "profile.html", {"user": user, "posts": posts})
 
-    def post(self):
-        User.objects.get()
+
+class ProfileEdit(View, LoginRequiredMixin):
+    def get(self, request):
+        form = UserEditForm(instance=request.user)
+        return render(request, "update_profile.html", {"form": form})
+
+    def post(self, request):
+        form = UserEditForm(request.POST, instance=request.user)
+        if form.is_valid():
+            user = form.save()
+        else:
+            return HttpResponse("форма не правильно заполнена")
+        return redirect("profile")
+
+
+@login_required()
+def delete_post(request):
+    pass
+
+
+@login_required()
+def leave_comment(request):
+    pass
 
 
 class Registration(View):

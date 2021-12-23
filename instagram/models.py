@@ -9,7 +9,7 @@ from .manager import UserManager
 class User(AbstractUser):
     username = None
     email = models.EmailField(db_index=True, unique=True)
-    bio = models.CharField(max_length=150)
+    bio = models.CharField(max_length=150, null=True)
     avatar = models.FilePathField()
     images = models.ManyToManyField('Picture')
 

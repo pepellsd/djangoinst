@@ -5,9 +5,24 @@
   <title>profile</title>
  </head>
  <body>
+    <div style="width: auto; height: 300px;">
      <p>{{ user.email }}</p>
+     <p>{{ user.first_name }}</p>
+     <p>{{ user.last_name }}</p>
      <p>{{ user.bio }}</p>
      <p>{{ user.avatar }}</p>
-     <p>{{ user.images }}</p>
+     <button type="button" onclick="document.location='{% url 'edit_profile' %}'">edit</button>
+    </div>
+    {% for post in posts %}
+        <div id="row-main-post">
+            <div class="col-md-3">
+                <img src="/{{ "media/" }}{{ post.images.first.path }}" alt=""/>
+                {% for tag in post.tags.all %}
+                    <p class="">{{ tag.name }}</p>
+                {% endfor %}
+                <p class="">{{ post.description }}</p>
+            </div>
+        </div>
+    {% endfor %}
  </body>
 </html>

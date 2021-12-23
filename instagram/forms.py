@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
 
 from .models import User
@@ -10,3 +10,14 @@ class UserRegisterForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('email', 'password1', 'password2', 'first_name', 'last_name')
+
+
+class UserEditForm(UserChangeForm):
+    password = None
+    bio = forms.CharField(required=False, widget=forms.Textarea(
+        attrs={'class': 'form-control', 'rows': 3, 'cols': 10}))
+
+    class Meta:
+        model = User
+        exclude = ["email", "password"]
+        fields = ["first_name", "last_name", "bio"]
