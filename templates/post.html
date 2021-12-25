@@ -14,9 +14,20 @@
     {% endfor %}
   <p>{{ post.description }}</p>
   <p>likes {{ likes_count }}</p>
+    <form class="" action="{% url 'like_unlike' post_id=post.id %}" method="POST">
+    {% csrf_token %}
+    <button type="submit" >like</button>
+    </form>
     <p>comments</p>
     {% for comment in comments %}
-    <p>{{ comment.text}}</p>
+    <p>{{ comment.user.email }}:  {{ comment.text}}</p>
     {% endfor %}
+    <form class="" action="{% url 'leave_comment' post_id=post.id %}" method="POST">
+    {% csrf_token %}
+        <label>
+            <input type="text" name="comment_text">
+        </label>
+    <button type="submit" >comment</button>
+    </form>
  </body>
 </html>

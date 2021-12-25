@@ -68,20 +68,43 @@ class ProfileEdit(View, LoginRequiredMixin):
     def post(self, request):
         form = UserEditForm(request.POST, instance=request.user)
         if form.is_valid():
-            user = form.save()
+            form.save()
         else:
             return HttpResponse("форма не правильно заполнена")
         return redirect("profile")
 
 
 @login_required()
-def delete_post(request):
-    pass
+def delete_post(request, post_id):
+    user_pk = request.user.pk
+    post = Post.objects.get(pk=post_id)
+    if post.user_id == user_pk:
+        pass
+    else:
+        return HttpResponse("it's not your post", status=406)
+    Post.delete(post)
+    return redirect("profile")
 
 
 @login_required()
-def leave_comment(request):
-    pass
+def leave_comment(request, post_id):
+    user_pk = request.user.pk
+    comment_text = request.POST["comment_text"]
+    comment = Comment(user_id=user_pk, post_id=post_id, text=comment_text)
+    comment.save()
+    return redirect("view_post", post_id)
+
+
+@login_required()
+def like_unlike_post(request, post_id):
+    user_pk = request.user.pk
+    try:
+        like = Like.objects.get(user_id=user_pk, post_id=post_id)
+        Like.delete(like)
+    except Like.DoesNotExist:
+        like = Like(user_id=user_pk, post_id=post_id)
+        like.save()
+    return redirect("view_post", post_id)
 
 
 class Registration(View):
@@ -98,7 +121,7 @@ class Registration(View):
             user.is_active = False
             user.save()
             current_site = get_current_site(request)
-            token = Token(code=self.gen_token._make_token_with_timestamp(user=user, timestamp=60*60*24),
+            token = Token(code=self.gen_token._make_token_with_timestamp(user=user, timestamp=60 * 60 * 24),
                           user_id=user.pk,
                           expiration_date=datetime.datetime.now() + datetime.timedelta(days=1))
             token.save()
@@ -120,11 +143,11 @@ def activate(request, uidb64, token):
         uid = force_str(urlsafe_base64_decode(uidb64).decode())
         user = User.objects.get(pk=uid)
     except User.DoesNotExist:
-        user=None
+        user = None
     _token = Token.objects.filter(user_id=user.pk).first()
-    if user and token==_token.code:
+    if user and token == _token.code:
         if _token.expiration_date >= timezone.now():
-            user.is_active =True
+            user.is_active = True
             user.save()
             login(request, user)
             return redirect("profile")

@@ -21,6 +21,12 @@
                     <p class="">{{ tag.name }}</p>
                 {% endfor %}
                 <p class="">{{ post.description }}</p>
+                <p>likes: {{ post.get_likes }}</p>
+                <p>Comments</p>
+                {% for comment in post.get_comments %}
+                    <p>{{ comment.user.email }}:  {{ comment.text }}</p>
+                {% endfor %}
+                <button type="button" onclick="document.location='{% url 'delete_post' post_id=post.id %}'">delete</button>
             </div>
         </div>
     {% endfor %}

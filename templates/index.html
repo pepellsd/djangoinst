@@ -27,7 +27,6 @@
                 {% for tag in post.tags.all %}
                     <p class="">{{ tag.name }}</p>
                 {% endfor %}
-                <p class="">{{ post.description }}</p>
                 <button type="button" onclick="document.location='{{ post.absolute_url }}'" class="btn btn" id="btn-watch">подробнее</button>
 
             </div>
