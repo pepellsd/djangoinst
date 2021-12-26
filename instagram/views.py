@@ -1,5 +1,6 @@
 import datetime
 
+from django.core.paginator import Paginator
 from django.views.generic import View
 from django.shortcuts import render, HttpResponse, redirect
 from django.contrib.sites.shortcuts import get_current_site
@@ -22,10 +23,13 @@ from .forms import UserRegisterForm, UserEditForm, CreatePostForm, UploadUserIma
 def index(request):
     search = request.GET.get("search")
     if search:
-        posts = Post.objects.filter(tags__name=search).exclude(user_id=request.user.id)
+        posts = Post.objects.get_queryset().filter(tags__name=search).exclude(user_id=request.user.id).order_by('id')
     else:
-        posts = Post.objects.exclude(user_id=request.user.id)
-    return render(request, "index.html", {"posts": posts})
+        posts = Post.objects.get_queryset().exclude(user_id=request.user.id).order_by('id')
+    paginator = Paginator(posts, 10)
+    page_num = request.GET.get('page')
+    page_obj = paginator.get_page(page_num)
+    return render(request, "index.html", {"posts": posts, "page_obj": page_obj})
 
 
 @login_required()
@@ -180,8 +184,10 @@ class CreatePost(View, LoginRequiredMixin):
 
     def post(self, request):
         files = request.FILES.getlist('images')
+        tags = request.POST["tags"]
         post = Post(user=request.user, description=request.POST["description"])
         post.save()
+        post.tags.set(tags)
         for file in files:
             picture = Picture(path=file)
             picture.save()
