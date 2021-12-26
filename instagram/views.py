@@ -14,15 +14,15 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import Post, User, Like, Comment, Token
-from .forms import UserRegisterForm, UserEditForm
+from .models import Post, User, Like, Comment, Token, Picture
+from .forms import UserRegisterForm, UserEditForm, CreatePostForm, UploadUserImagesForm
 
 
 @login_required()
 def index(request):
     search = request.GET.get("search")
     if search:
-        posts = Post.objects.exclude(user_id=request.user.id, tags__name=search)
+        posts = Post.objects.filter(tags__name=search).exclude(user_id=request.user.id)
     else:
         posts = Post.objects.exclude(user_id=request.user.id)
     return render(request, "index.html", {"posts": posts})
@@ -66,7 +66,7 @@ class ProfileEdit(View, LoginRequiredMixin):
         return render(request, "update_profile.html", {"form": form})
 
     def post(self, request):
-        form = UserEditForm(request.POST, instance=request.user)
+        form = UserEditForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
         else:
@@ -153,3 +153,38 @@ def activate(request, uidb64, token):
             return redirect("profile")
     else:
         return HttpResponse("activation failed", status=401)
+
+
+class UploadImagesUser(View, LoginRequiredMixin):
+    form = UploadUserImagesForm()
+
+    def get(self, request):
+        return render(request, "upload_images.html", context={"form": self.form})
+
+    def post(self, request, *args, **kwargs):
+        user = User.objects.get(id=request.user.pk)
+        files = request.FILES.getlist('images')
+        print(files)
+        for file in files:
+            picture = Picture(path=file)
+            picture.save()
+            user.images.add(picture)
+        return redirect("profile")
+
+
+
+class CreatePost(View, LoginRequiredMixin):
+    def get(self, request):
+        form = CreatePostForm()
+        return render(request, "create_post.html", context={"form": form})
+
+    def post(self, request):
+        files = request.FILES.getlist('images')
+        post = Post(user=request.user, description=request.POST["description"])
+        post.save()
+        for file in files:
+            picture = Picture(path=file)
+            picture.save()
+            post.images.add(picture)
+        post.save()
+        return redirect("view_post", post_id=post.pk)

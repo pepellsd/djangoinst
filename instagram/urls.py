@@ -11,8 +11,10 @@ urlpatterns = [
     path('activate/<uidb64>/<token>', activate, name='activate'),
     path('login/', LoginUser.as_view(), name="login"),
     path('logout/', LogoutView.as_view(next_page=settings.LOGOUT_REDIRECT_URL), name='logout'),
-    path('edit_profile', ProfileEdit.as_view(), name="edit_profile"),
+    path('edit_profile/', ProfileEdit.as_view(), name="edit_profile"),
     path('posts/<int:post_id>/delete/', delete_post, name="delete_post"),
     path('posts/<int:post_id>/comment', leave_comment, name="leave_comment"),
-    path('posts/<int:post_id>/like_unlike', like_unlike_post, name="like_unlike")
+    path('posts/<int:post_id>/like_unlike', like_unlike_post, name="like_unlike"),
+    path('create_post/', CreatePost.as_view(), name="create_post"),
+    path('upload_images/', UploadImagesUser.as_view(), name="upload_images")
 ]

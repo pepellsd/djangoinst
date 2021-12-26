@@ -10,7 +10,7 @@ class User(AbstractUser):
     username = None
     email = models.EmailField(db_index=True, unique=True)
     bio = models.CharField(max_length=150, null=True)
-    avatar = models.FilePathField()
+    avatar = models.ImageField(upload_to="photos/", null=True)
     images = models.ManyToManyField('Picture')
 
     USERNAME_FIELD = 'email'

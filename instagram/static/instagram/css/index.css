@@ -20,7 +20,6 @@ body {
 #btn-sign-in {
     margin-left: 88%;
     display: inline-block;
-    margin-bottom: 20px;
     font-family: arial,sans-serif;
     font-size: 11px;
     color: rgb(205,216,228);
@@ -38,4 +37,7 @@ body {
        inset 0 0 1px rgba(140,150,170,.8),
        0 1px rgb(83,94,104),
        0 0 1px rgb(86,96,106);
+}
+#btn-profile{
+    margin-left: 80%;
 }

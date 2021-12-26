@@ -5,14 +5,13 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>edit_profile</title>
+    <title>upload_img</title>
 </head>
 <body>
-<form class="" action="{% url 'edit_profile' %}" method="POST" enctype="multipart/form-data">
-{% csrf_token %}
-
+<form class="" action="{% url 'upload_images' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" >apply</button>
+     <button type="submit" >upload</button>
 </form>
 </body>
 </html>

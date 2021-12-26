@@ -5,18 +5,24 @@
   <title>profile</title>
  </head>
  <body>
-    <div style="width: auto; height: 300px;">
+    <div style="">
+     <img src="/{{ "media/" }}{{ user.avatar }}" alt=""/>
      <p>{{ user.email }}</p>
      <p>{{ user.first_name }}</p>
      <p>{{ user.last_name }}</p>
      <p>{{ user.bio }}</p>
-     <p>{{ user.avatar }}</p>
+     {% for image in user.images.all %}
+         <img src="/{{ "media/" }}{{ image.path }}" alt=""/>
+     {% endfor %}
      <button type="button" onclick="document.location='{% url 'edit_profile' %}'">edit</button>
+     <button type="button" onclick="document.location='{% url 'upload_images' %}'">upload images</button>
     </div>
     {% for post in posts %}
         <div id="row-main-post">
             <div class="col-md-3">
-                <img src="/{{ "media/" }}{{ post.images.first.path }}" alt=""/>
+                {% for image in post.images.all %}
+                    <img src="/{{ "media/" }}{{ image.path }}" alt=""/>
+                {% endfor %}
                 {% for tag in post.tags.all %}
                     <p class="">{{ tag.name }}</p>
                 {% endfor %}
