@@ -14,6 +14,7 @@ from django.contrib.auth import login, authenticate
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils.datastructures import MultiValueDictKeyError
 
 from .models import Post, User, Like, Comment, Token, Picture
 from .forms import UserRegisterForm, UserEditForm, CreatePostForm, UploadUserImagesForm
@@ -184,13 +185,16 @@ class CreatePost(View, LoginRequiredMixin):
 
     def post(self, request):
         files = request.FILES.getlist('images')
-        tags = request.POST["tags"]
         post = Post(user=request.user, description=request.POST["description"])
         post.save()
-        post.tags.set(tags)
+        try:
+            tags = request.POST["tags"]
+            post.tags.set(tags)
+        except MultiValueDictKeyError:
+            pass
         for file in files:
             picture = Picture(path=file)
             picture.save()
             post.images.add(picture)
-        post.save()
+        # post.save()
         return redirect("view_post", post_id=post.pk)

@@ -24,12 +24,11 @@ class UserEditForm(UserChangeForm):
 
 
 class CreatePostForm(forms.Form):
-    tags = forms.ModelMultipleChoiceField(
-        queryset=Tag.objects.all(), widget=forms.CheckboxSelectMultiple)
+    tags = forms.ModelMultipleChoiceField(required=False, queryset=Tag.objects.all(),
+                                          widget=forms.CheckboxSelectMultiple)
     images = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
     description = forms.CharField(required=False,
                                   widget=forms.Textarea(attrs={"class": "form-control", "maxlength": 500}))
-
 
 
 class UploadUserImagesForm(forms.Form):
