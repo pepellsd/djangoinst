@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-%78$2u=@w-o1_$6!eqimnlfob&@52o*pqiq770j9uc363)usm+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["0.0.0.0", "localhost"]
+ALLOWED_HOSTS = ["0.0.0.0", "localhost", "djangoinst.xyz"]
 
 # Application definition
 
@@ -42,7 +42,7 @@ INSTALLED_APPS = [
 # added consts
 AUTH_USER_MODEL = 'instagram.User'
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / 'media/'
+MEDIA_ROOT = BASE_DIR / 'mediafiles/'
 
 # auth
 LOGIN_URL = '/login'
@@ -146,3 +146,8 @@ EMAIL_HOST = os.environ.get("EMAIL_HOST")
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = 587
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+VIRTUAL_HOST="djangoinst.xyz"
+VIRTUAL_PORT=8000
+LETSENCRYPT_HOST="djangoinst.xyz"
