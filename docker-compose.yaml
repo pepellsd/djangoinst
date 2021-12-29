@@ -4,9 +4,10 @@ services:
   djangoinst:
     build: .
     command: gunicorn djangoInstagram.wsgi:application --bind 0.0.0.0:8000
+    container_name: djangoist_application
     restart: always
     volumes:
-      - static_volume:/home/app/web/static
+      - static_volume:/usr/src/service/staticfiles
     environment:
       - EMAIL_HOST=smtp.gmail.com
       - EMAIL_HOST_PASSWORD=chlen55artem
@@ -15,6 +16,7 @@ services:
       - db
   db:
     image: postgres:13-alpine
+    container_name: djangoinst_postgresql
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     expose:
@@ -25,12 +27,27 @@ services:
       - POSTGRES_DB=inst
   nginx:
     build: ./nginx
+    container_name: djangoinst_nginx
+    restart: unless-stopped
     volumes:
-      - static_volume:/home/app/web/static
+      - static_volume:/usr/src/service/staticfiles
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
     ports:
-      - 1337:80
+      - 80:80
     depends_on:
       - djangoinst
+  certbot:
+    image: certbot/certbot
+    container_name: djangoinst_certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+    depends_on:
+      - djangoinst
+    command: certonly --standalone --email denlox16@list.ru --agree-tos --no-eff-email --staging -d djangoinst.xyz -d djangoinst.xyz
 volumes:
   postgres_data:
   static_volume:
+  certbot-etc:
+  certbot-var:
