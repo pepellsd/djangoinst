@@ -6,7 +6,8 @@ services:
     command: gunicorn djangoInstagram.wsgi:application --bind 0.0.0.0:8000
     restart: always
     volumes:
-      - static_volume:/home/app/web/static
+      - static_volume:/usr/src/service/static
+      - media_volume:/usr/src/service/mediafiles
     environment:
       - EMAIL_HOST=smtp.gmail.com
       - EMAIL_HOST_PASSWORD=chlen55artem
@@ -26,11 +27,13 @@ services:
   nginx:
     build: ./nginx
     volumes:
-      - static_volume:/home/app/web/static
+      - static_volume:/usr/src/service/static
+      - media_volume:/usr/src/service/mediafiles
     ports:
-      - 1337:80
+      - 80:80
     depends_on:
       - djangoinst
 volumes:
   postgres_data:
   static_volume:
+  media_volume:

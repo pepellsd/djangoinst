@@ -3,7 +3,7 @@
 from django.conf import settings
 from django.db import migrations, models
 import django.utils.timezone
-import app.instagram.manager
+import instagram.manager
 
 
 class Migration(migrations.Migration):
@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                 'abstract': False,
             },
             managers=[
-                ('objects', app.instagram.manager.UserManager()),
+                ('objects', instagram.manager.UserManager()),
             ],
         ),
         migrations.CreateModel(
