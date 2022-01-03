@@ -15,16 +15,17 @@ class Command(BaseCommand):
         # fill fake users
         with transaction.atomic():
             admin_user = User(email="email@we.com", is_superuser=True)
-            user = User(email="example@example.com", bio="some cool advertising",avatar="/fake_images/avatar.jpg")
+            user = User(email="example@example.com", bio="some cool advertising", avatar="/fake_images/avatar.jpg")
             admin_user.set_password("123")
             user.set_password("1234")
             admin_user.save()
             user.save()
             # fill fake tags
-            names_tags = ["cats", "cooking", "traveling"]
-            for name in names_tags:
-                tag = Tag(name=name)
-                tag.save()
+            Tag.objects.bulk_create([
+                Tag(name="cats"),
+                Tag(name="cooking"),
+                Tag(name="traveling")
+            ])
             # fill fake posts
             post1 = Post(user=user, description="darth vader cat")
             post2 = Post(user=user, description="nature's rest")
@@ -37,9 +38,7 @@ class Command(BaseCommand):
             picture1 = Picture(path="/fake_images/kot.jpg")
             picture2 = Picture(path="/fake_images/shaslik.jpg")
             picture3 = Picture(path="/fake_images/rest.jpg")
-            picture1.save()
-            picture3.save()
-            picture2.save()
+            Picture.objects.bulk_create([picture1, picture2, picture3])
             post1.images.add(picture1)
             post2.images.add(picture3, picture2)
             # fill fake like
