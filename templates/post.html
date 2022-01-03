@@ -13,13 +13,13 @@
         <p>{{ tag.name }}</p>
     {% endfor %}
   <p>{{ post.description }}</p>
-  <p>likes {{ likes_count }}</p>
+  <p>likes {{ post.get_likes }}</p>
     <form class="" action="{% url 'like_unlike' post_id=post.id %}" method="POST">
     {% csrf_token %}
     <button type="submit" >like</button>
     </form>
     <p>comments</p>
-    {% for comment in comments %}
+    {% for comment in post.get_comments %}
     <p>{{ comment.user.email }}:  {{ comment.text}}</p>
     {% endfor %}
     <form class="" action="{% url 'leave_comment' post_id=post.id %}" method="POST">

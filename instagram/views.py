@@ -36,9 +36,7 @@ def index(request):
 @login_required()
 def view_post(request, post_id):
     post = Post.objects.get(pk=post_id)
-    comments = Comment.objects.filter(post_id=post.id).all()
-    len_likes = len(Like.objects.filter(post_id=post.id).all())
-    return render(request, "post.html", {"post": post, "comments": comments, "likes_count": len_likes})
+    return render(request, "post.html", {"post": post})
 
 
 class LoginUser(View):
@@ -75,7 +73,7 @@ class ProfileEdit(View, LoginRequiredMixin):
         if form.is_valid():
             form.save()
         else:
-            return HttpResponse("форма не правильно заполнена")
+            return HttpResponse("form fill incorrect")
         return redirect("profile")
 
 
@@ -83,9 +81,7 @@ class ProfileEdit(View, LoginRequiredMixin):
 def delete_post(request, post_id):
     user_pk = request.user.pk
     post = Post.objects.get(pk=post_id)
-    if post.user_id == user_pk:
-        pass
-    else:
+    if post.user_id != user_pk:
         return HttpResponse("it's not your post", status=406)
     Post.delete(post)
     return redirect("profile")
@@ -138,9 +134,9 @@ class Registration(View):
             })
             email = EmailMessage(email_sub, msg, settings.EMAIL_HOST_USER, [user.email])
             email.send()
-            return HttpResponse("подтвердите почту")
+            return HttpResponse("confirm email address")
         else:
-            return HttpResponse("форма не правильно заполнена")
+            return HttpResponse("form fill incorrect")
 
 
 def activate(request, uidb64, token):

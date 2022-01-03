@@ -37,7 +37,7 @@ class Post(models.Model):
         return reverse('view_post', kwargs={"post_id": self.pk})
 
     def get_likes(self):
-        return len(Like.objects.filter(post_id=self.pk))
+        return Like.objects.filter(post_id=self.pk).count()
 
     def get_comments(self):
         return Comment.objects.filter(post_id=self.pk)

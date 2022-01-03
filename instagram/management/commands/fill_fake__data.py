@@ -15,12 +15,11 @@ class Command(BaseCommand):
         # fill fake users
         with transaction.atomic():
             admin_user = User(email="email@we.com", is_superuser=True)
-            user = User(email="example@example.com", bio="some cool advertising",
-                        password="1234", avatar="/fake_images/avatar.jpg")
-            admin_user.save()
-            user.save()
+            user = User(email="example@example.com", bio="some cool advertising",avatar="/fake_images/avatar.jpg")
             admin_user.set_password("123")
             user.set_password("1234")
+            admin_user.save()
+            user.save()
             # fill fake tags
             names_tags = ["cats", "cooking", "traveling"]
             for name in names_tags:
