@@ -1,30 +1,6 @@
 from django.db import models
 from django.conf import settings
 from django.urls import reverse
-from django.contrib.auth.models import AbstractUser
-
-from .manager import UserManager
-
-
-class User(AbstractUser):
-    username = None
-    email = models.EmailField(db_index=True, unique=True)
-    bio = models.CharField(max_length=150, null=True)
-    avatar = models.ImageField(upload_to="photos/", null=True)
-    images = models.ManyToManyField('Picture')
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
-    objects = UserManager()
-
-    def __str__(self):
-        return self.email
-
-
-class Token(models.Model):
-    code = models.CharField(max_length=255)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    expiration_date = models.DateTimeField()
 
 
 class Post(models.Model):
@@ -32,6 +8,9 @@ class Post(models.Model):
     description = models.CharField(max_length=500, null=True)
     tags = models.ManyToManyField('Tag', db_index=True)
     images = models.ManyToManyField('Picture')
+
+    def __str__(self):
+        return f"post of {self.user}, id: {self.pk}"
 
     def absolute_url(self):
         return reverse('view_post', kwargs={"post_id": self.pk})

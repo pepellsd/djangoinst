@@ -11,8 +11,8 @@ RUN mkdir ./staticfiles
 
 EXPOSE 8000
 
-COPY ./media ./media
 COPY ./djangoInstagram ./djangoInstagram
 COPY ./instagram ./instagram
 COPY ./templates ./templates
+COPY ./user ./user
 COPY ./manage.py .

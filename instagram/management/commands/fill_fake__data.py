@@ -1,10 +1,8 @@
-import os
-import urllib.request
-from django.core.management.base import BaseCommand, CommandError
-from django.core.files import File
+from django.core.management.base import BaseCommand
 from django.db import transaction
 
-from instagram.models import Post, User, Tag, Like, Picture, Comment
+from instagram.models import Post, Tag, Like, Picture, Comment
+from user.models import User
 
 
 class Command(BaseCommand):

@@ -20,12 +20,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%78$2u=@w-o1_$6!eqimnlfob&@52o*pqiq770j9uc363)usm+'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", default=0)
 
-ALLOWED_HOSTS = []
+try:
+    ALLOWED_HOSTS = os.environ.get("ALLOWED_HOST").split(" ")
+except AttributeError:
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 # Application definition
 
@@ -37,12 +40,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'instagram.apps.InstagramConfig',
+    'user.apps.UserConfig',
 ]
 
 # added consts
-AUTH_USER_MODEL = 'instagram.User'
+AUTH_USER_MODEL = 'user.User'
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / 'media/'
+CSRF_TRUSTED_ORIGINS = ['https://djangoinst.xyz']
 
 # auth
 LOGIN_URL = '/login'
@@ -84,10 +89,10 @@ WSGI_APPLICATION = 'djangoInstagram.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'inst',
-        'USER': 'inst_client',
-        'PASSWORD': '123',
-        'HOST': 'localhost',
+        'NAME': os.environ.get("DB_NAME"),
+        'USER': os.environ.get("DB_USER"),
+        'PASSWORD': os.environ.get("DB_PASS"),
+        'HOST': os.environ.get("DB_HOST"),
         'PORT': '5432',
     }
 }
@@ -127,7 +132,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'instagram/static')

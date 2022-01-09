@@ -32,7 +32,10 @@
                 {% for comment in post.get_comments %}
                     <p>{{ comment.user.email }}:  {{ comment.text }}</p>
                 {% endfor %}
-                <button type="button" onclick="document.location='{% url 'delete_post' post_id=post.id %}'">delete</button>
+                <form class="" action="{% url 'delete_post' post_id=post.id %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" >delete</button>
+                </form>
             </div>
         </div>
     {% endfor %}
