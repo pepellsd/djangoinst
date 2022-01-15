@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+*.env
+venv/
+/media/photos
+*.env*
+/__pycache__/*
+.idea/
