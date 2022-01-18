@@ -1,3 +1,5 @@
+import unittest
+
 from unittest.case import TestCase
 from django.shortcuts import reverse
 from django.test import Client
@@ -9,6 +11,7 @@ class TestUserApp(TestCase):
     def setUp(self) -> None:
         self.client = Client()
 
+    @unittest.skipIf(User.objects.filter(email="email@domain.com").first() is not None, reason="user already in db")
     def test_register(self):
         response = self.client.post(reverse("register"), data={"email": "email@domain.com",
                                                                "password1": "password123456789",
@@ -42,6 +45,6 @@ class TestUserApp(TestCase):
 
     def test_edit_profile(self):
         self.client.login(email="example@example.com", password="1234")
-        response = self.client.post(reverse("edit_profile"), data={"bio": "some bio"}, follow=True)
+        response = self.client.post(reverse("edit_profile"), data={"first_name": "ivan"}, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue("some bio" in User.objects.filter(email="example@example.com").first().bio)
+        self.assertTrue("ivan" in User.objects.filter(email="example@example.com").first().first_name)
