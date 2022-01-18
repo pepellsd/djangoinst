@@ -46,7 +46,6 @@ INSTALLED_APPS = [
 ]
 
 # added consts
-AUTH_USER_MODEL = 'user.User'
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / 'media/'
 CSRF_TRUSTED_ORIGINS = ['https://djangoinst.xyz']
@@ -54,6 +53,7 @@ CSRF_TRUSTED_ORIGINS = ['https://djangoinst.xyz']
 # auth
 LOGIN_URL = '/login'
 LOGOUT_REDIRECT_URL = "/login"
+AUTH_USER_MODEL = 'user.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

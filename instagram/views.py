@@ -7,7 +7,7 @@ from .models import Post, Like, Comment, Picture
 from .forms import CreatePostForm, CommentForm
 
 
-class Index(ListView, LoginRequiredMixin):
+class Index(LoginRequiredMixin, ListView):
     model = Post
     template_name = "index.html"
     paginate_by = 10
@@ -15,26 +15,30 @@ class Index(ListView, LoginRequiredMixin):
     def get_queryset(self):
         search = self.request.GET.get("search")
         if search:
-            posts = Post.objects.get_queryset().filter(tags__name=search).exclude(
-                user_id=self.request.user.id).order_by('id')
+            posts = (
+                Post.objects
+                    .filter(tags__name=search)
+                    .exclude(user_id=self.request.user.id)
+                    .order_by('id')
+            )
         else:
             posts = Post.objects.get_queryset().exclude(user_id=self.request.user.id).order_by('id')
         return posts
 
 
-class ViewPost(DetailView, LoginRequiredMixin):
+class ViewPost(LoginRequiredMixin, DetailView,):
     model = Post
     template_name = "post.html"
 
 
-class ProfileView(View, LoginRequiredMixin):
+class ProfileView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
         posts = Post.objects.filter(user_id=user.pk)
         return render(request, "profile.html", {"user": user, "posts": posts})
 
 
-class DeletePost(View, LoginRequiredMixin):
+class DeletePost(LoginRequiredMixin, View):
     def post(self, request, post_id):
         user_pk = request.user.pk
         post = Post.objects.get(pk=post_id)
@@ -44,7 +48,7 @@ class DeletePost(View, LoginRequiredMixin):
         return redirect("profile")
 
 
-class LeaveComment(View, LoginRequiredMixin):
+class LeaveComment(LoginRequiredMixin, View):
     def post(self, request, post_id):
         form = CommentForm(request.POST)
         if not form.is_valid():
@@ -56,7 +60,7 @@ class LeaveComment(View, LoginRequiredMixin):
         return redirect("view_post", post_id)
 
 
-class LikeUnlike(View, LoginRequiredMixin):
+class LikeUnlike(LoginRequiredMixin, View):
     def post(self, request, post_id):
         user_pk = request.user.pk
         like = Like.objects.filter(user_id=user_pk, post_id=post_id).delete()
@@ -66,7 +70,7 @@ class LikeUnlike(View, LoginRequiredMixin):
         return redirect("view_post", post_id)
 
 
-class CreatePost(View, LoginRequiredMixin):
+class CreatePost(LoginRequiredMixin, View):
     def get(self, request):
         form = CreatePostForm()
         return render(request, "create_post.html", context={"form": form})

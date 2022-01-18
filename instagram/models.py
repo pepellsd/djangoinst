@@ -13,13 +13,10 @@ class Post(models.Model):
         return f"post of {self.user}, id: {self.pk}"
 
     def absolute_url(self):
-        return reverse('view_post', kwargs={"post_id": self.pk})
+        return reverse('view_post', kwargs={"pk": self.pk})
 
     def get_likes(self):
         return Like.objects.filter(post_id=self.pk).count()
-
-    def get_comments(self):
-        return Comment.objects.filter(post_id=self.pk)
 
 
 class Tag(models.Model):
@@ -34,8 +31,8 @@ class Like(models.Model):
     post = models.ForeignKey('Post', on_delete=models.CASCADE)
 
     class Meta:
-        unique_together=["user", "post"]
-        index_together=["user", "post"]
+        unique_together = ["user", "post"]
+        index_together = ["user", "post"]
 
 
 class Picture(models.Model):
@@ -44,5 +41,5 @@ class Picture(models.Model):
 
 class Comment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    post = models.ForeignKey('Post', on_delete=models.CASCADE)
+    post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name="comments")
     text = models.CharField(max_length=500)

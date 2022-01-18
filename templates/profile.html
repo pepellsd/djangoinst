@@ -29,7 +29,7 @@
                 <p class="">{{ post.description }}</p>
                 <p>likes: {{ post.get_likes }}</p>
                 <p>Comments</p>
-                {% for comment in post.get_comments %}
+                {% for comment in post.comments.all %}
                     <p>{{ comment.user.email }}:  {{ comment.text }}</p>
                 {% endfor %}
                 <form class="" action="{% url 'delete_post' post_id=post.id %}" method="POST">

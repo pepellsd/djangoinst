@@ -22,7 +22,7 @@
      </div>
  </header>
  <body>
-   {% for post in posts %}
+   {% for post in object_list %}
         <div id="row-main-post">
             <div class="col-md-3">
                 <img src="{{ "media/" }}{{ post.images.first.path }}" alt=""/>

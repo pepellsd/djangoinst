@@ -77,17 +77,16 @@ def activate(request, uidb64, token):
     except User.DoesNotExist:
         user = None
     _token = Token.objects.filter(user_id=user.pk).first()
-    if user and token == _token.code:
-        if _token.expiration_date >= timezone.now():
-            user.is_active = True
-            user.save()
-            login(request, user)
-            return redirect("profile")
+    if user and _token and token == _token.code and _token.expiration_date >= timezone.now():
+        user.is_active = True
+        user.save()
+        login(request, user)
+        return redirect("profile")
     else:
         return HttpResponse("activation failed", status=401)
 
 
-class ProfileEdit(View, LoginRequiredMixin):
+class ProfileEdit(LoginRequiredMixin, View):
     def get(self, request):
         form = UserEditForm(instance=request.user)
         return render(request, "update_profile.html", {"form": form})
@@ -101,7 +100,7 @@ class ProfileEdit(View, LoginRequiredMixin):
         return redirect("profile")
 
 
-class UploadImagesUser(View, LoginRequiredMixin):
+class UploadImagesUser(LoginRequiredMixin, View):
     form = UploadUserImagesForm()
 
     def get(self, request):
