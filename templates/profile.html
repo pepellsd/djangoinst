@@ -34,7 +34,9 @@
                 {% endfor %}
                 <form class="" action="{% url 'delete_post' post_id=post.id %}" method="POST">
                     {% csrf_token %}
-                    <button type="submit" >delete</button>
+                    <input type="hidden" name="_method" value="delete">
+                    <input type="submit" value="delete">
+{#                    <button type="submit" value="Delete">delete</button>#}
                 </form>
             </div>
         </div>

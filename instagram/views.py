@@ -22,11 +22,11 @@ class Index(LoginRequiredMixin, ListView):
                     .order_by('id')
             )
         else:
-            posts = Post.objects.get_queryset().exclude(user_id=self.request.user.id).order_by('id')
+            posts = Post.objects.exclude(user_id=self.request.user.id).order_by('id')
         return posts
 
 
-class ViewPost(LoginRequiredMixin, DetailView,):
+class ViewPost(LoginRequiredMixin, DetailView, ):
     model = Post
     template_name = "post.html"
 
@@ -39,7 +39,15 @@ class ProfileView(LoginRequiredMixin, View):
 
 
 class DeletePost(LoginRequiredMixin, View):
-    def post(self, request, post_id):
+    http_method_names = ['post', 'delete']
+
+    def dispatch(self, request, *args, **kwargs):
+        method = request.POST.get('_method', '').lower()
+        if method == 'delete':
+            return self.delete(request, *args, **kwargs)
+        return super(DeletePost, self).dispatch(request, *args, **kwargs)
+
+    def delete(self, request, post_id):
         user_pk = request.user.pk
         post = Post.objects.get(pk=post_id)
         if post.user_id != user_pk:
@@ -54,7 +62,7 @@ class LeaveComment(LoginRequiredMixin, View):
         if not form.is_valid():
             return HttpResponse("form is fill incorrect ")
         user_pk = request.user.pk
-        comment_text = request.POST["comment_text"]
+        comment_text = form.data.get("comment_text")
         comment = Comment(user_id=user_pk, post_id=post_id, text=comment_text)
         comment.save()
         return redirect("view_post", post_id)
@@ -87,8 +95,11 @@ class CreatePost(LoginRequiredMixin, View):
             post.tags.set(tags)
         except MultiValueDictKeyError:
             pass
+        pictures = []
         for file in files:
             picture = Picture(path=file)
-            picture.save()
-            post.images.add(picture)
+            pictures.append(picture)
+        Picture.objects.bulk_create(pictures)
+        for p in pictures:
+            post.images.add(p)
         return redirect("view_post", pk=post.pk)

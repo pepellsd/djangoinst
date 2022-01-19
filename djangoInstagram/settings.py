@@ -47,7 +47,7 @@ INSTALLED_APPS = [
 
 # added consts
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / 'media/'
+MEDIA_ROOT = os.path.join(f"{BASE_DIR}/media/")
 CSRF_TRUSTED_ORIGINS = ['https://djangoinst.xyz']
 
 # auth
@@ -70,7 +70,7 @@ ROOT_URLCONF = 'djangoInstagram.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [os.path.join(f"{BASE_DIR}/templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

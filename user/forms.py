@@ -24,7 +24,8 @@ class UserEditForm(UserChangeForm):
 
 
 class UploadUserImagesForm(forms.Form):
-    images = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), label="select Image")
+    images = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}),
+                             label="select Image", required=False)
 
 
 class UserLoginForm(forms.Form):

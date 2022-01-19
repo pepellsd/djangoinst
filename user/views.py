@@ -27,8 +27,8 @@ class LoginUser(View):
         form = UserLoginForm(request.POST)
         if not form.is_valid():
             return HttpResponse("form fill incorrect ")
-        email = request.POST["email"]
-        password = request.POST["password"]
+        email = form.data.get("email")
+        password = form.data.get("password")
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
@@ -67,7 +67,7 @@ class Registration(View):
             email.send()
             return HttpResponse("confirm email address")
         else:
-            return HttpResponse("form fill incorrect")
+            return render(request, "reg.html", {"form": form})
 
 
 def activate(request, uidb64, token):
@@ -75,7 +75,7 @@ def activate(request, uidb64, token):
         uid = force_str(urlsafe_base64_decode(uidb64).decode())
         user = User.objects.get(pk=uid)
     except User.DoesNotExist:
-        user = None
+        return HttpResponse("activation failed user not exist", status=401)
     _token = Token.objects.filter(user_id=user.pk).first()
     if user and _token and token == _token.code and _token.expiration_date >= timezone.now():
         user.is_active = True
@@ -83,7 +83,7 @@ def activate(request, uidb64, token):
         login(request, user)
         return redirect("profile")
     else:
-        return HttpResponse("activation failed", status=401)
+        return HttpResponse("activation failed expiration date left", status=401)
 
 
 class ProfileEdit(LoginRequiredMixin, View):
@@ -109,7 +109,7 @@ class UploadImagesUser(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         form = UploadUserImagesForm(request.FILES)
         if not form.is_valid():
-            return HttpResponse("form is fill incorrect")
+            return render(request, "upload_images.html", {"form": form})
         user = User.objects.get(id=request.user.pk)
         files = request.FILES.getlist('images')
         for file in files:
