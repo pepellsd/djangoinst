@@ -100,6 +100,5 @@ class CreatePost(LoginRequiredMixin, View):
             picture = Picture(path=file)
             pictures.append(picture)
         Picture.objects.bulk_create(pictures)
-        for p in pictures:
-            post.images.add(p)
+        post.images.add(*pictures)
         return redirect("view_post", pk=post.pk)
